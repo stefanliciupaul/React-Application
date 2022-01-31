@@ -1,4 +1,5 @@
 const { Op } = require("sequelize");
+
 const cors=require('cors')
 const express = require("express");
 const app = express();
@@ -141,7 +142,79 @@ app.get('/companies/:cid', async (req, res) => {
 })
 
 
-//api calls for founders entity based on their foreign key
+
+//api calls for the secondary entity
+app.get('/founders', async (req, res) => {
+    try {
+        const founders = await Founder.findAll()
+        res.status(200).json(founders)
+    } catch {
+        console.warn(err);
+        res.status(500).json({ message: 'some error occured' })
+    }
+})
+
+app.post('/founders', async (req, res, next) => {
+    try {
+
+        await Founder.create(req.body)
+        res.status(201).json({ message: 'created' })
+    } catch {
+        console.warn(err);
+        res.status(500).json({ message: 'some error occured' })
+    }
+})
+
+app.put('/founders/:fid', async (req, res) => {
+    try {
+        const founders = await Founder.findByPk(req.params.fid)
+        if (founders) {
+            await founders.update(req.body, { fields: ['name', 'role', 'CompanyId'] })
+            res.status(202).json({ message: "accepted" })
+
+        } else {
+            res.status(404).json({ message: "not found" })
+        }
+    } catch (err) {
+        console.warn(err)
+        res.status(500).json({ message: 'some error occured' })
+    }
+})
+
+
+app.delete('/founders/:fid', async (req, res) => {
+    try {
+        const founder = await Founder.findByPk(req.params.fid)
+        if (founder) {
+            await founder.destroy()
+            res.status(202).json({ message: "accepted" })
+
+        } else {
+            res.status(404).json({ message: "not found" })
+        }
+    } catch (err) {
+        console.warn(err)
+        res.status(500).json({ message: 'some error occured' })
+    }
+})
+
+
+app.get('/founders/:fid', async (req, res) => {
+    try {
+        const founder = await Founder.findByPk(req.params.fid)
+        if (founder) {
+            res.status(200).json(founder)
+
+        } else {
+            res.status(404).json({ message: "not found" })
+        }
+    } catch (err) {
+        console.warn(err)
+        res.status(500).json({ message: 'some error occured' })
+    }
+})
+
+//api calls that modify secondary entities based on their foreign key
 app.get('/companies/:cid/founders', async (req, res) => {
     try {
         const company = await Company.findByPk(req.params.cid)
