@@ -2,11 +2,11 @@
 Running it :
 
 Backend
-cd .\server\
-npm i
-nodemon .\server.js
+1. cd .\server\
+2. npm i
+3. nodemon .\server.js
 
 Frontend
-cd .\frontend\
-npm i
-npm start
+1.cd .\frontend\
+2.npm i
+3.npm start
